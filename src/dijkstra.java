@@ -1,8 +1,8 @@
-import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class dijkstra {
-    public int[][] calculate(Graph[] @NotNull [] graph, int x, int y, int end_x, int end_y) {
+    public int[][] calculate(Graph[]  [] graph, int x, int y, int end_x, int end_y) {
         LinkedList<Graph> queue = new LinkedList<>();
         int x_max = graph.length;
         int y_max = graph[0].length;
