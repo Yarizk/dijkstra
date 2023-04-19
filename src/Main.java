@@ -38,26 +38,6 @@ public class Main {
 
     }
     public static void main(String[] args) {
-//        int x = 0;
-//        int y = 0;
-//        int x_max = 10;
-//        int y_max = 10;
-//        Graph[][] grap = new Graph[x_max][y_max];
-//        int[][] map = new int[x_max][y_max];
-//        for (int i = 0; i < map.length; i++) {
-//            for (int j = 0; j < map[0].length; j++) {
-//                map[i][j] = 1;
-//            }
-//        }
-//        Main main = new Main();
-//        main.initGraph(grap, map);
-//
-//        dijkstra dijkstra = new dijkstra();
-//        main.setNull(grap,2,2);
-//        main.setNull(grap,2,3);
-//        main.setNull(grap,2,4);
-//        dijkstra.calculate(grap, 0, 5,9,5);
-
         Frame frame = new Frame();
         frame.setVisible(true);
 

@@ -1,6 +1,6 @@
 public class Graph{
     Graph up, down, left, right;
-    Graph parent =null;
+    Graph parent;
     int distance=1,visited=0;
     int x, y;
     public Graph(int x, int y){
@@ -26,6 +26,7 @@ public class Graph{
     public void setDown(Graph down){
         this.down = down;
     }
+
     public void get(){
         if (up != null) {
             System.out.println("up: " + up.x + " " + up.y);

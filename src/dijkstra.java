@@ -1,10 +1,12 @@
 import org.jetbrains.annotations.NotNull;
+import java.util.*;
 
 public class dijkstra {
     public int[][] calculate(Graph[] @NotNull [] graph, int x, int y, int end_x, int end_y) {
+        LinkedList<Graph> queue = new LinkedList<>();
         int x_max = graph.length;
         int y_max = graph[0].length;
-        int u,v, start_x = x, start_y = y;
+        int u,v;
         for (int i = 0; i < x_max; i++) {
             for (int j = 0; j < y_max; j++) {
                 if(graph[i][j] == null)continue;
@@ -14,70 +16,58 @@ public class dijkstra {
             }
         }
         graph[x][y].distance = 0;
-        int count =1;
-        while (count < x_max*y_max){
+        queue.add(graph[x][y]);
+        while(!queue.isEmpty()){
             graph[x][y].visited = 1;
-            Graph current = graph[x][y];
-            u = current.x;
-            v = current.y;
-            int min = 999;
-            if (current.left != null && current.left.visited == 0) {
-                if (current.left.distance > current.distance + 1) {
-                    current.left.distance = current.distance + 1;
-                    current.left.parent = current;
-                }
-                if (current.left.distance < min) {
-                    min = current.left.distance;
-                    x = current.left.x;
-                    y = current.left.y;
-                }
-            }
-            if (current.up != null && current.up.visited == 0) {
-                if (current.up.distance > current.distance + 1) {
-                    current.up.distance = current.distance + 1;
-                    current.up.parent = current;
-                }
-                if (current.up.distance < min) {
-                    min = current.up.distance;
-                    x = current.up.x;
-                    y = current.up.y;
-                }
-            }
-            if (current.down != null && current.down.visited == 0) {
-                if (current.down.distance > current.distance + 1) {
-                    current.down.distance = current.distance + 1;
-                    current.down.parent = current;
-                }
-                if (current.down.distance < min) {
-                    min = current.down.distance;
-                    x = current.down.x;
-                    y = current.down.y;
-                }
-            }
+            graph[x][y].parent = null;
+            Graph current = queue.poll();
+            x = current.x;
+            y = current.y;
 
-            if (current.right != null && current.right.visited == 0) {
-                if (current.right.distance > current.distance + 1) {
-                    current.right.distance = current.distance + 1;
-                    current.right.parent = current;
+            if(graph[x][y].up != null && graph[x][y].up.visited == 0){
+                u = graph[x][y].up.x;
+                v = graph[x][y].up.y;
+                if(graph[u][v].distance > graph[x][y].distance + 1){
+                    graph[u][v].distance = graph[x][y].distance + 1;
                 }
-                if (current.right.distance < min) {
-                    min = current.right.distance;
-                    x = current.right.x;
-                    y = current.right.y;
+                queue.add(graph[u][v]);
+            }
+            if(graph[x][y].down != null && graph[x][y].down.visited == 0){
+                u = graph[x][y].down.x;
+                v = graph[x][y].down.y;
+                if(graph[u][v].distance > graph[x][y].distance + 1){
+                    graph[u][v].distance = graph[x][y].distance + 1;
                 }
+                queue.add(graph[u][v]);
             }
-
-            if(u == x && v == y){
-                x = start_x;
-                y = start_y;
+            if(graph[x][y].left != null && graph[x][y].left.visited == 0){
+                u = graph[x][y].left.x;
+                v = graph[x][y].left.y;
+                if(graph[u][v].distance > graph[x][y].distance + 1){
+                    graph[u][v].distance = graph[x][y].distance + 1;
+                }
+                queue.add(graph[u][v]);
             }
-            count++;
+            if(graph[x][y].right != null && graph[x][y].right.visited == 0){
+                u = graph[x][y].right.x;
+                v = graph[x][y].right.y;
+                if(graph[u][v].distance > graph[x][y].distance + 1){
+                    graph[u][v].distance = graph[x][y].distance + 1;
+                }
+                queue.add(graph[u][v]);
+            }
         }
 
         for (int i = 0; i < y_max; i++) {
             for (int j = 0; j < x_max; j++) {
                 if(graph[j][i] == null)System.out.print("X \t\t");
-                else System.out.print(graph[j][i].distance + " \t\t");
+                else System.out.print(graph[j][i].distance +" \t\t");
+                if(graph[j][i] != null && graph[j][i].parent == null){
+                    if( j > 0 && graph[j-1][i] != null && graph[j-1][i].distance < graph[j][i].distance) graph[j][i].parent = graph[j-1][i];
+                    else if( j < x_max-1 && graph[j+1][i] != null && graph[j+1][i].distance < graph[j][i].distance)graph[j][i].parent = graph[j+1][i];
+                    else if( i > 0 && graph[j][i-1] != null && graph[j][i-1].distance < graph[j][i].distance)graph[j][i].parent = graph[j][i-1];
+                    else if( i < y_max-1 && graph[j][i+1] != null && graph[j][i+1].distance < graph[j][i].distance)graph[j][i].parent = graph[j][i+1];
+                }
             }
             System.out.println();
         }
@@ -86,8 +76,6 @@ public class dijkstra {
         int[][] path = new int[x_max][y_max];
         while (end != null){
             path[end.x][end.y] = 1;
-
-
             end = end.parent;
         }
         return path;
