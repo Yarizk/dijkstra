@@ -2,19 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Random;
 
 public class Panel extends JPanel implements ActionListener {
      static final int SCREEN_WIDTH = 600;
      static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 60;
     static final int DELAY = 75;
-    static final Plot[][] plot = new Plot[SCREEN_WIDTH / UNIT_SIZE][SCREEN_HEIGHT / UNIT_SIZE];
-    static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
     static final Color[][] colors = new Color[SCREEN_WIDTH / UNIT_SIZE][SCREEN_HEIGHT / UNIT_SIZE];
     public static final int[][] mapWall = new int[SCREEN_WIDTH / UNIT_SIZE][SCREEN_HEIGHT / UNIT_SIZE];
     public static final ArrayList<Integer[]> mapTarget = new ArrayList<>();
-    public final int mapPath[][] = new int[SCREEN_WIDTH / UNIT_SIZE][SCREEN_HEIGHT / UNIT_SIZE];
 
     boolean running = true;
     Timer timer;
@@ -28,6 +25,7 @@ public class Panel extends JPanel implements ActionListener {
         defineColor();
 
         this.addMouseListener(new MyMouseAdapter() );
+        this.addKeyListener(new MyKeyAdapter());
         startGame();
     }
 
@@ -41,7 +39,6 @@ public class Panel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         draw(g);
     }
     public void draw(Graphics g) {
@@ -68,7 +65,6 @@ public class Panel extends JPanel implements ActionListener {
         g.setColor(Color.white);
         Font f = new Font("Times New Roman",Font.BOLD, 20);
         g.setFont(f);
-        g.drawString("Clear",SCREEN_WIDTH-SCREEN_WIDTH/2 -200, SCREEN_HEIGHT+100);
         g.drawString("Press 'C' to clear", SCREEN_WIDTH-SCREEN_WIDTH/2 -200, SCREEN_HEIGHT+100);
 
         g.setColor(Color.green);
@@ -76,8 +72,12 @@ public class Panel extends JPanel implements ActionListener {
         g.setColor(Color.white);
         Font f1 = new Font("Times New Roman",Font.BOLD, 20);
         g.setFont(f1);
-        g.drawString("Run", SCREEN_WIDTH-SCREEN_WIDTH/2+100, SCREEN_HEIGHT+100);
         g.drawString("Press 'R' to run", SCREEN_WIDTH-SCREEN_WIDTH/2+100, SCREEN_HEIGHT+100);
+
+        g.setColor(Color.blue);
+        g.fillRect(SCREEN_WIDTH-SCREEN_WIDTH/2-37, SCREEN_HEIGHT+75, 75, 50);
+        g.setColor(Color.white);
+        g.drawString("random", SCREEN_WIDTH-SCREEN_WIDTH/2-30, SCREEN_HEIGHT+100);
 
     }
 
@@ -120,6 +120,30 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
+    public static class MyKeyAdapter extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if(e.getKeyCode() == KeyEvent.VK_C){
+                for (int i = 0; i < SCREEN_WIDTH / UNIT_SIZE; i++) {
+                    for (int j = 0; j < SCREEN_HEIGHT / UNIT_SIZE; j++) {
+                        colors[i][j] = Color.white;
+                        mapWall[i][j] = 0;
+                    }
+                }
+                mapTarget.clear();
+            }
+            if(e.getKeyCode() == KeyEvent.VK_R){
+                int[][] path = Run();
+                for (int i = 0; i < path.length; i++) {
+                    for (int j = 0; j < path[0].length; j++) {
+                        if(path[i][j] == 1){
+                            colors[i][j] = Color.blue;
+                        }
+                    }
+                }
+            }
+        }
+    }
     public static class MyMouseAdapter extends MouseAdapter {
         @Override
         public void mousePressed(MouseEvent e) {
@@ -135,9 +159,6 @@ public class Panel extends JPanel implements ActionListener {
                         colors[mapTarget.get(0)[0]][mapTarget.get(0)[1]] = Color.white;
                         mapTarget.remove(0);
                     }
-//                    for(int i = 0; i < mapTarget.size(); i++){
-//                        System.out.println(mapTarget.get(i)[0] + " " + mapTarget.get(i)[1]);
-//                    }
                 }
 
             }
@@ -178,6 +199,35 @@ public class Panel extends JPanel implements ActionListener {
                     }
                     else{
                         System.out.println("Please choose 2 target");
+                    }
+                }
+                if (e.getX() > SCREEN_WIDTH - SCREEN_WIDTH / 2 - 37 && e.getX() < SCREEN_WIDTH - SCREEN_WIDTH / 2 + 38 && e.getY() > SCREEN_HEIGHT + 75 && e.getY() < SCREEN_HEIGHT + 125) {
+                    for (int i = 0; i < SCREEN_WIDTH / UNIT_SIZE; i++) {
+                        for (int j = 0; j < SCREEN_HEIGHT / UNIT_SIZE; j++) {
+                            colors[i][j] = Color.white;
+                            mapWall[i][j] = 0;
+                        }
+                    }
+                    mapTarget.clear();
+                    Random rd = new Random();
+                    int x = rd.nextInt(SCREEN_WIDTH / UNIT_SIZE);
+                    int y = rd.nextInt(SCREEN_HEIGHT / UNIT_SIZE);
+                    colors[x][y] = Color.green;
+                    mapTarget.add(new Integer[]{x, y});
+                    x = rd.nextInt(SCREEN_WIDTH / UNIT_SIZE);
+                    y = rd.nextInt(SCREEN_HEIGHT / UNIT_SIZE);
+                    colors[x][y] = Color.green;
+                    mapTarget.add(new Integer[]{x, y});
+                    for (int i = 0; i < SCREEN_WIDTH / UNIT_SIZE; i++) {
+                        for (int j = 0; j < SCREEN_HEIGHT / UNIT_SIZE; j++) {
+                            if(colors[i][j] != Color.green){
+                                int r = rd.nextInt(3);
+                                if(r == 1){
+                                    colors[i][j] = Color.red;
+                                    mapWall[i][j] = 1;
+                                }
+                            }
+                        }
                     }
                 }
             }
