@@ -221,7 +221,7 @@ public class Panel extends JPanel implements ActionListener {
                     for (int i = 0; i < SCREEN_WIDTH / UNIT_SIZE; i++) {
                         for (int j = 0; j < SCREEN_HEIGHT / UNIT_SIZE; j++) {
                             if(colors[i][j] != Color.green){
-                                int r = rd.nextInt(3);
+                                int r = rd.nextInt(4);
                                 if(r == 1){
                                     colors[i][j] = Color.red;
                                     mapWall[i][j] = 1;
